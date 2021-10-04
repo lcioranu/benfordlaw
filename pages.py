@@ -1,10 +1,12 @@
 import csv, json, math, os
-
+import flask
 import pandas as pd
+import numpy as np
 from flask import Blueprint, render_template, request, current_app
 
 bluePrint = Blueprint("bluePrint", __name__)
 file_name = ""
+app = flask.Flask(__name__)
 
 @bluePrint.route('/', methods=['GET', 'POST'])
 def homepage():
@@ -29,12 +31,16 @@ def preview_file():
         return "Error reading data. Please check your file"
     return df.to_html(classes='table table-striped table-sm', max_rows=10, table_id="dataframe_table")
 
-
+@app.errorhandler(400)
 @bluePrint.route('/generate')
 def generate_chart_data():
     target_field = request.args.get('target')
-    touple_list = generate_from_string(os.path.join(current_app.instance_path, 'files', file_name), target_field)
-    return json.dumps(touple_list)
+    try:
+        touple_list = generate(os.path.join(current_app.instance_path, 'files', file_name), target_field)
+        return json.dumps(touple_list)
+    except Exception as e:
+        return render_template("error400.html"), 400
+
 
 
 @bluePrint.route('/header')
@@ -54,7 +60,11 @@ def target_list(df, target_column):
 
 
 def generate_from_string(file, target_column):
-    column_list = target_list(read_data(file_name), target_column)
+    df = read_data(file_name)
+    dataTypeObj = df.dtypes[target_column]
+    if dataTypeObj != np.int64 or np.float64:
+        return "Cannot use target column"
+    column_list = target_list(df, target_column)
     number_of_rec = len(column_list)
     int_list = []
     bedford_list = []
@@ -70,6 +80,7 @@ def generate_from_string(file, target_column):
     return (bedford_list)
 
 def generate(file, target_column):
+    df = read_data(file_name)
     column_list = target_list(read_data(file_name), target_column)
     numberOfRec = len(column_list)
     int_list = []
