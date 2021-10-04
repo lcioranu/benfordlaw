@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link href="{{url_for('static',filename='style.css')}}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>{%block titleblock%}{%endblock%}</title>
+
+</head>
+<body >
+<script type="text/javascript" src="{{url_for('static',filename='script.js')}}"></script>
+
+
+<div name="container-upload" id="container-upload"  style="width: 80%"  class="container-md">
+    {%block upload%}{%endblock%}
+</div>
+
+<div name="container-preview" id="container-preview" style="width: 80%;display: none " class="container-md">
+    {%block preview%}{%endblock%}
+</div>
+<div name="form-target" id="form-target" style="display: none; width=80%"  class="container-md" >
+    {%block form%}{%endblock%}
+</div>
+
+<div name="container-chart" id="container-chart" style="display: none" class="container-md">
+    {%block chart%}{%endblock%}
+</div>
+
+</body>
+</html>

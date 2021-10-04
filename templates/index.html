@@ -1,0 +1,31 @@
+{%extends "base_template.html"%}
+{%block titleblock%}Bedford's problem{%endblock%}
+{%block upload%}
+<h2 class="ui-controlgroup-label"> Select file </h2>
+ <div class="mb-3">
+    <form method="post" enctype="multipart/form-data" id="myform" class="form-inline">
+        <div class="form-group">
+            <input type="file"  class="form-control" id="file" name="file"/>
+            <input type="button"  class="form-control" value="Upload" id="uploadBtn" onclick="uploadFile()">
+        </div>
+    </form>
+ </div>
+{%endblock%}
+
+{%block preview%}
+<h2> File preview </h2>
+{%endblock%}
+
+{%block chart%}
+<h2> Chart</h2>
+<div id="chart_content">
+<canvas id="chart" width="800" height="300"></canvas>
+</div>
+{%endblock%}
+
+{%block form%}
+<h2> Select target column  </h2>
+<label for="label_option">Choose target column:</label>
+<select class="label_option" id="label_option" onchange="renderChart()">
+</select>
+{%endblock%}
