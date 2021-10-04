@@ -37,7 +37,7 @@ def previewfile():
 @bluePrint.route('/generate')
 def generateChartData():
     targetField = request.args.get('target')
-    touplelist = generate(os.path.join(current_app.instance_path, 'files', fileName), targetField)
+    touplelist = generatefromstring(os.path.join(current_app.instance_path, 'files', fileName), targetField)
     return json.dumps(touplelist)
 
 
@@ -56,6 +56,22 @@ def readData(file):
 def targetList(df, target_column):
     return df[target_column].tolist()
 
+
+def generatefromstring(file, target_column):
+    column_list = targetList(readData(fileName), target_column)
+    numberofrec = len(column_list)
+    int_list = []
+    bedford_list = []
+    for i in range(len(column_list)):
+        try:
+            val = int(str(column_list[i])[0])
+            int_list.append(val)
+        except Exception as e:
+            numberofrec -= 1
+    for c in range(10):
+        percentage = (int_list.count(c) / numberofrec) * 100
+        bedford_list.append((c, percentage))
+    return (bedford_list)
 
 def generate(file, target_column):
     column_list = targetList(readData(fileName), target_column)
