@@ -1,9 +1,9 @@
 from flask import Flask
 
 
-def getApp():
-    webApp = Flask(__name__)
+def get_app():
+    web_app = Flask(__name__)
     from pages import bluePrint
-    webApp.register_blueprint(bluePrint, url_prefix='/')
+    web_app.register_blueprint(bluePrint, url_prefix='/')
 
-    return webApp
+    return web_app
