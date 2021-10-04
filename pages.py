@@ -1,65 +1,61 @@
 import csv, json, math, os
 
-
 import pandas as pd
 from flask import Blueprint, render_template, request, current_app
 
 bluePrint = Blueprint("bluePrint", __name__)
-fileName = ""
-target = '7_2009'
-
+file_name = ""
 
 @bluePrint.route('/', methods=['GET', 'POST'])
 def homepage():
     return render_template("index.html")
-
 
 @bluePrint.route('/upload', methods=['POST'])
 def upload():
     f = request.files['file']
     os.makedirs(os.path.join(current_app.instance_path, 'files'), exist_ok=True)
     f.save(os.path.join(current_app.instance_path, 'files', f.filename))
-    global fileName
-    fileName = f.filename
+    global file_name
+    file_name = f.filename
     f = open(os.path.join(current_app.instance_path, 'files', f.filename), "r")
     return render_template("index.html")
 
 
 @bluePrint.route('/preview')
-def previewfile():
+def preview_file():
     try:
-        df = readData(fileName)
+        df = read_data(file_name)
     except Exception as e:
         return "Error reading data. Please check your file"
     return df.to_html(classes='table table-striped table-sm', max_rows=10, table_id="dataframe_table")
 
 
 @bluePrint.route('/generate')
-def generateChartData():
-    targetField = request.args.get('target')
-    touplelist = generatefromstring(os.path.join(current_app.instance_path, 'files', fileName), targetField)
-    return json.dumps(touplelist)
+def generate_chart_data():
+    target_field = request.args.get('target')
+    touple_list = generate_from_string(os.path.join(current_app.instance_path, 'files', file_name), target_field)
+    return json.dumps(touple_list)
 
 
 @bluePrint.route('/header')
-def getHeader():
-    df = readData(fileName)
+def get_header():
+    df = read_data(file_name)
     json_file = json.dumps(df.columns.values.tolist())
     return  json_file
 
 
-def readData(file):
-    df = pd.read_csv(os.path.join(current_app.instance_path, 'files', fileName), delimiter=getDelimiter())
+def read_data(file):
+    df = pd.read_csv(os.path.join(current_app.instance_path, 'files', file_name), delimiter=get_delimiter())
     return df
 
 
-def targetList(df, target_column):
+def target_list(df, target_column):
     return df[target_column].tolist()
 
 
-def generatefromstring(file, target_column):
-    column_list = targetList(readData(fileName), target_column)
-    numberofrec = len(column_list)
+def generate_from_string(file, target_column):
+    column_list = target_list(read_data(file_name), target_column)
+    number_of_rec = len(column_list)
     int_list = []
     bedford_list = []
     for i in range(len(column_list)):
@@ -67,14 +63,14 @@ def generatefromstring(file, target_column):
             val = int(str(column_list[i])[0])
             int_list.append(val)
         except Exception as e:
-            numberofrec -= 1
+            number_of_rec -= 1
     for c in range(10):
-        percentage = (int_list.count(c) / numberofrec) * 100
+        percentage = (int_list.count(c) / number_of_rec) * 100
         bedford_list.append((c, percentage))
     return (bedford_list)
 
 def generate(file, target_column):
-    column_list = targetList(readData(fileName), target_column)
+    column_list = target_list(read_data(file_name), target_column)
     numberOfRec = len(column_list)
     int_list = []
     bedford_list = []
@@ -90,8 +86,8 @@ def generate(file, target_column):
     return (bedford_list)
 
 
-def getDelimiter():
-    f = open(os.path.join(current_app.instance_path, 'files', fileName), "r")
+def get_delimiter():
+    f = open(os.path.join(current_app.instance_path, 'files', file_name), "r")
     dialect = csv.Sniffer().sniff(f.readline())
     f.seek(0)
     f.close()
