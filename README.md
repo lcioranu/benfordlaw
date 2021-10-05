@@ -20,7 +20,9 @@ These service is implemented in Python using Flask, and the data is being read a
 
 **To run the program:**
 Python:
+
   From the root of the project run:
+
   `python .\service.py`
 
 Docker:
