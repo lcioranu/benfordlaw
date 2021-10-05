@@ -9,7 +9,10 @@ var strTarget = elem.options[elem.selectedIndex].text;
                    success: function(data){
                        div.style.display="block";
                        constructChart(data)
-                       }
+                       },
+                   error: function(error){
+                         alert("Error processing target column. Please select another target column");
+                   }
                    });
 }
 
@@ -29,9 +32,7 @@ div_preview.innerHTML=""
                  constructTargetForm();
                },
                error: function(error){
-                div_preview.innerHTML += "<h2> Cannot display preview </h2>";
-                console.log(error);
-
+                     alert("Error processing selected file. Please select another file");
                }
 
         });

@@ -8,9 +8,11 @@ bluePrint = Blueprint("bluePrint", __name__)
 file_name = ""
 app = flask.Flask(__name__)
 
+
 @bluePrint.route('/', methods=['GET', 'POST'])
 def homepage():
     return render_template("index.html")
+
 
 @bluePrint.route('/upload', methods=['POST'])
 def upload():
@@ -23,6 +25,7 @@ def upload():
     return render_template("index.html")
 
 
+@app.errorhandler(400)
 @bluePrint.route('/preview')
 def preview_file():
     try:
@@ -31,23 +34,23 @@ def preview_file():
         return "Error reading data. Please check your file"
     return df.to_html(classes='table table-striped table-sm', max_rows=10, table_id="dataframe_table")
 
+
 @app.errorhandler(400)
 @bluePrint.route('/generate')
 def generate_chart_data():
     target_field = request.args.get('target')
     try:
         touple_list = generate(os.path.join(current_app.instance_path, 'files', file_name), target_field)
-        return json.dumps(touple_list)
     except Exception as e:
         return render_template("error400.html"), 400
-
+    return json.dumps(touple_list)
 
 
 @bluePrint.route('/header')
 def get_header():
     df = read_data(file_name)
     json_file = json.dumps(df.columns.values.tolist())
-    return  json_file
+    return json_file
 
 
 def read_data(file):
@@ -78,6 +81,7 @@ def generate_from_string(file, target_column):
         percentage = (int_list.count(c) / number_of_rec) * 100
         bedford_list.append((c, percentage))
     return (bedford_list)
+
 
 def generate(file, target_column):
     df = read_data(file_name)
